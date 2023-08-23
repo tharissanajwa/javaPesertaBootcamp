@@ -104,10 +104,16 @@ public class ListPesertaBootcamp extends Component {
                             loopInputNama = false;
                         } else {
                             if (inputNoTelp != null && inputNoTelp.matches("^[0-9]{10,13}$")) {
-                                tambahPeserta(getDataPeserta(), inputNama, inputAlamat, inputNoTelp, "aktif");
-                                JOptionPane.showMessageDialog(null, "Selamat! Anda berhasil menambahkan peserta baru.");
-                                validasiNoTelepon = true;
-                                loopInputNama = false;
+                                if (inputNama != null && inputAlamat != null && inputNoTelp != null) {
+                                    tambahPeserta(getDataPeserta(), inputNama, inputAlamat, inputNoTelp, "aktif");
+                                    JOptionPane.showMessageDialog(null, "Selamat! Anda berhasil menambahkan peserta baru.");
+                                    validasiNoTelepon = true;
+                                    loopInputNama = false;
+                                } else {
+                                    validasiNoTelepon = true;
+                                    loopInputNama = false;
+                                }
+
                             } else {
                                 JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. Untuk kembali ke menu utama, silahkan ketik `keluar`.");
                             }
