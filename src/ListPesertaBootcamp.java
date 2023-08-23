@@ -16,15 +16,13 @@ public class ListPesertaBootcamp extends Component {
     }
 
     public static void base() {
+        // Membuat data set
+        tambahPeserta(getDataPeserta(), "Tharissa Najwa", "Jl. Kenangan 8", "089578656789", "aktif");
+        tambahPeserta(getDataPeserta(), "Putri Budiman", "Jl. Melati 2", "085378786543", "aktif");
+
         boolean menuLooping = true;
         while (menuLooping) {
-            String menuMessage = "Halo, selamat datang di Manajemen Peserta Bootcamp! \n" +
-                    "Berikut menu - menu yang tersedia : \n" +
-                    "1. Lihat Peserta Bootcamp\n" +
-                    "2. Mendaftarkan Peserta Baru\n" +
-                    "3. Menghapus Peserta\n" +
-                    "4. Update Data Peserta\n" +
-                    "0. Keluar dari Aplikasi";
+            String menuMessage = menuMessage();
             String input = JOptionPane.showInputDialog(null, menuMessage + "\n\nMasukkan pilihan menu Anda (0-4) :");
             if (input != null) {
                 switch (input) {
@@ -42,15 +40,27 @@ public class ListPesertaBootcamp extends Component {
                         updatePeserta();
                         break;
                     case "0":
-                        JOptionPane.showMessageDialog(null, "Anda memilih untuk keluar dari aplikasi. Terimakasih atas waktunya.");
+                        JOptionPane.showMessageDialog(null, "Anda memilih untuk keluar dari aplikasi. \nTerimakasih atas waktunya.");
                         menuLooping = false;
                         break;
                     default:
-                        JOptionPane.showMessageDialog(null, "Mohon maaf! Pilihan yang ada inputkan tidak valid. Silahkan coba inputkan kembali.");
+                        JOptionPane.showMessageDialog(null, "Mohon maaf! Pilihan yang anda inputkan tidak valid. \nSilahkan coba inputkan kembali.");
                         break;
                 }
             }
         }
+    }
+
+    public static String menuMessage() {
+        String menuMessage;
+        menuMessage = "Halo, selamat datang di Manajemen Peserta Bootcamp! \n" +
+                "Berikut menu - menu yang tersedia : \n" +
+                "1. Lihat Peserta Bootcamp\n" +
+                "2. Mendaftarkan Peserta Baru\n" +
+                "3. Menghapus Peserta\n" +
+                "4. Update Data Peserta\n" +
+                "0. Keluar dari Aplikasi";
+        return menuMessage;
     }
     public static void lihatDataPeserta() {
         String dataMessage = "Berikut Data Peserta Bootcamp yang tersedia :";
@@ -115,12 +125,12 @@ public class ListPesertaBootcamp extends Component {
                                 }
 
                             } else {
-                                JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. Untuk kembali ke menu utama, silahkan ketik `keluar`.");
+                                JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                             }
                         }
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Mohon maaf nama " + inputNama + " sudah ada dalam data. Silahkan buat nama baru. Untuk kembali ke menu utama, silahkan ketik `keluar`.");
+                    JOptionPane.showMessageDialog(null, "Mohon maaf nama " + inputNama + " sudah ada dalam data. Silahkan buat nama baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -191,13 +201,13 @@ public class ListPesertaBootcamp extends Component {
                                     loopInputPilihan = true;
                                     break;
                                 default :
-                                    JOptionPane.showMessageDialog(null, "Maaf! Inputan harus berupa Nama, Alamat, atau No Telepon. Silahkan coba kembali. Untuk kembali ke menu, silahkan ketikkan `keluar`.");
+                                    JOptionPane.showMessageDialog(null, "Maaf! Inputan harus berupa Nama, Alamat, atau No Telepon. Silahkan coba kembali. \nUntuk kembali ke menu, silahkan ketikkan `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                                     break;
                             }
                         }
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Maaf, peserta tidak ada dalam data. Silahkan coba kembali. Untuk kembali ke menu, silahkan ketikkan `keluar`.");
+                    JOptionPane.showMessageDialog(null, "Maaf, peserta tidak ada dalam data. Silahkan coba kembali. \nUntuk kembali ke menu, silahkan ketikkan `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -222,7 +232,7 @@ public class ListPesertaBootcamp extends Component {
                                 break;
                             }
                         } else {
-                            JOptionPane.showMessageDialog(null, "Mohon maaf nama " + inputNamaBaru + " sudah ada dalam data. Silahkan buat nama baru. Untuk kembali ke menu utama, silahkan ketik `keluar`.");
+                            JOptionPane.showMessageDialog(null, "Mohon maaf nama " + inputNamaBaru + " sudah ada dalam data. Silahkan buat nama baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                             break;
                         }
                     }
@@ -265,7 +275,7 @@ public class ListPesertaBootcamp extends Component {
                         }
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. Untuk kembali ke menu utama, silahkan ketik `keluar`.");
+                    JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
