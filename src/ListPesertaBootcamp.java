@@ -47,7 +47,7 @@ public class ListPesertaBootcamp extends Component {
                         break;
                     case "0":
                         JOptionPane.showMessageDialog(null, "Anda memilih untuk keluar dari aplikasi. \nTerimakasih atas waktunya.");
-                        menuLooping = false;
+                        menuLooping = false; // Pengguna memilih keuar dari aplikasi, maka looping menu utama dihentikan
                         break;
                     default:
                         JOptionPane.showMessageDialog(null, "Mohon maaf! Pilihan yang anda inputkan tidak valid. \nSilahkan coba inputkan kembali.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -72,20 +72,20 @@ public class ListPesertaBootcamp extends Component {
     public static void lihatDataPeserta() {
         String dataMessage = "Berikut Data Peserta Bootcamp yang tersedia :";
 
-        int number = 0;
-        for (PesertaBootcamp peserta: getDataPeserta()) {
+        int number = 0; // Inisiliasi variabel number untuk pengecekan apakah data nya ada atau tidak
+        for (PesertaBootcamp peserta: getDataPeserta()) { // Loop data peserta untuk menampilkan hasil
             String namaPeserta = peserta.getNama();
             String alamatPeserta = peserta.getAlamat();
             String noTelpPeserta = peserta.getNoTelp();
             String statusPeserta = peserta.getStatusPeserta();
 
-            if (statusPeserta.equalsIgnoreCase("aktif")) {
-                number++;
+            if (statusPeserta.equalsIgnoreCase("aktif")) { // Aktif artinya peserta masih ada dalam data, tidak aktif artinya peserta sudah dihapus
+                number++; // Menambahkan nilai number untuk validasi hasil yang dimunculkan
                 dataMessage += "\n\nNama: " + namaPeserta + "\nAlamat: " + alamatPeserta + "\nNo Telepon: " + noTelpPeserta + "\n";
             }
         }
 
-        if (number > 0) {
+        if (number > 0) { // Jika number kurang dari 0, maka akan menampilkan hasil bahwa data belum ada
             JOptionPane.showMessageDialog(null, dataMessage, "Data Peserta", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, "Saat ini belum ada data peserta yang tersedia.", "Data Peserta", JOptionPane.INFORMATION_MESSAGE);
@@ -95,39 +95,40 @@ public class ListPesertaBootcamp extends Component {
     // Metode untuk mendaftarkan/menambahkan peserta baru
     public static void daftarPeserta() {
         JOptionPane.showMessageDialog(null, "Anda memilih menu untuk Mendaftarkan Peserta Baru.");
-        lihatDataPeserta();
+        lihatDataPeserta(); // Menampilkan list peserta yang tersedia
         boolean loopInputNama = true;
         while (loopInputNama) {
             // Meminta input nama peserta baru
             String inputNama = JOptionPane.showInputDialog(null, "Silahkan inputkan nama peserta : ");
 
-            if (inputNama != null && inputNama.equalsIgnoreCase("keluar")) {
+            if (inputNama != null && inputNama.equalsIgnoreCase("keluar")) { // Jika inputan pengguna adalah keluar, maka pengguna akan diarahkan kembali ke menu
                 loopInputNama = false;
             } else {
                 boolean namaExists = false;
+                // Cek apakah nama yang diinputkan pengguna sudah ada dalam data atau belum
                 for (PesertaBootcamp peserta : getDataPeserta()) {
                     if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
                         if (inputNama != null && inputNama.equalsIgnoreCase(peserta.getNama())) {
-                            namaExists = true;
+                            namaExists = true; // Jika ada, maka akan diberikan nilai true
                         }
                     }
                 }
 
-                if (!namaExists) {
+                if (!namaExists) { // Jika nama tidak ada, maka pengguna akan diberikan inputan selanjutnya
                     // Meminta input alamat dan validasi nomor telepon
                     String inputAlamat = JOptionPane.showInputDialog(null, "Silahkan inputkan alamat peserta : ");
                     boolean validasiNoTelepon = false;
-                    while (!validasiNoTelepon) {
+                    while (!validasiNoTelepon) { // Looping untuk validasi no telepon
                         String inputNoTelp = JOptionPane.showInputDialog(null, "Silahkan inputkan no telepon peserta : ");
                         if (inputNoTelp != null && inputNoTelp.equalsIgnoreCase("keluar")) {
                             validasiNoTelepon = true;
                             loopInputNama = false;
                         } else {
-                            if (inputNoTelp != null && inputNoTelp.matches("^[0-9]{10,13}$")) {
-                                if (inputNama != null && inputAlamat != null && inputNoTelp != null) {
+                            if (inputNoTelp != null && inputNoTelp.matches("^[0-9+]{10,15}$")) { // Mengecek apakah inputan pengguna berupa 10-15 digit angka
+                                if (inputNama != null && inputAlamat != null && inputNoTelp != null) { // Jika inputan berupa null, maka inputan tidak akan ditambahkan ke data peserta
                                     tambahPeserta(getDataPeserta(), inputNama, inputAlamat, inputNoTelp, "aktif");
                                     JOptionPane.showMessageDialog(null, "Selamat! Anda berhasil menambahkan peserta baru.");
-                                    int result = JOptionPane.showConfirmDialog(
+                                    int result = JOptionPane.showConfirmDialog( // Menanyakan pengguna apakah ingin menambahkan peserta baru lagi?
                                             null,
                                             "Apakah Anda ingin menambahkan peserta baru lagi?",
                                             "Konfirmasi",
@@ -165,7 +166,7 @@ public class ListPesertaBootcamp extends Component {
             if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
                 if (inputNama != null && inputNama.equalsIgnoreCase(peserta.getNama())) {
                     number++;
-                    peserta.setStatusPeserta("tidak aktif");
+                    peserta.setStatusPeserta("tidak aktif"); // Jika nama yang diinputkan ada dalam data, maka peserta akan dihapus dengan metode soft delete
                 }
             }
         }
@@ -201,6 +202,7 @@ public class ListPesertaBootcamp extends Component {
                     loopingInputNama = true;
                     boolean loopInputPilihan = false;
                     while (!loopInputPilihan) {
+                        // Menanyakan pengguna ingin merubah entitas data apa?
                         String inputPilihan = JOptionPane.showInputDialog(null, "Silahkan inputkan data yang ingin dirubah (Nama, Alamat, No Telepon): ");
 
                         if (inputPilihan != null && inputPilihan.equalsIgnoreCase("keluar")) {
@@ -209,15 +211,15 @@ public class ListPesertaBootcamp extends Component {
                         } else {
                             switch (inputPilihan) {
                                 case "Nama" :
-                                    updateNama(inputNama);
+                                    updateNama(inputNama); // Pengguna memilih untuk mengubah entitas nama, maka fungsi updateNama akan dipanggil
                                     loopInputPilihan = true;
                                     break;
                                 case "Alamat" :
-                                    updateAlamat(inputNama);
+                                    updateAlamat(inputNama); // Pengguna memilih untuk mengubah entitas alamat, maka fungsi updateAlamat akan dipanggil
                                     loopInputPilihan = true;
                                     break;
                                 case "No Telepon" :
-                                    updateNoTelp(inputNama);
+                                    updateNoTelp(inputNama); // Pengguna memilih untuk mengubah entitas no telepon, maka fungsi updateNoTelp akan dipanggil
                                     loopInputPilihan = true;
                                     break;
                                 default :
@@ -285,7 +287,7 @@ public class ListPesertaBootcamp extends Component {
             if (inputNoTelpBaru != null && inputNoTelpBaru.equalsIgnoreCase("keluar")) {
                 validasiNoTelepon = true;
             } else {
-                if (inputNoTelpBaru != null && inputNoTelpBaru.matches("^[0-9]{10,13}$")) {
+                if (inputNoTelpBaru != null && inputNoTelpBaru.matches("^[0-9+]{10,15}$")) {
                     for (PesertaBootcamp peserta : getDataPeserta()) {
                         if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
                             if (namaLama.equalsIgnoreCase(peserta.getNama())) {
