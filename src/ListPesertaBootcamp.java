@@ -3,65 +3,72 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Kelas untuk manajemen daftar peserta bootcamp
 public class ListPesertaBootcamp extends Component {
+    // Daftar peserta bootcamp yang disimpan dalam sebuah List
     private static List<PesertaBootcamp> dataPeserta = new ArrayList<>();
 
+    // Metode getter untuk mendapatkan data peserta
     public static List<PesertaBootcamp> getDataPeserta() {
         return dataPeserta;
     }
 
+    // Metode untuk menambahkan peserta baru ke dalam daftar
     public static List<PesertaBootcamp> tambahPeserta(List<PesertaBootcamp> peserta, String nama, String alamat, String noTelp, String statusPeserta) {
         peserta.add(new PesertaBootcamp(nama, alamat, noTelp, statusPeserta));
         return peserta;
     }
 
+    // Metode utama yang berisi loop menu aplikasi
     public static void base() {
-        // Membuat data set
+        // Inisialisasi data peserta awal
         tambahPeserta(getDataPeserta(), "Tharissa Najwa", "Jl. Kenangan 8", "089578656789", "aktif");
         tambahPeserta(getDataPeserta(), "Putri Budiman", "Jl. Melati 2", "085378786543", "aktif");
 
+        // Looping menu utama
         boolean menuLooping = true;
         while (menuLooping) {
-            String menuMessage = menuMessage();
+            String menuMessage = menuMessage(); // Memanggil fungsi untuk menampilkan menu utama
             String input = JOptionPane.showInputDialog(null, menuMessage + "\n\nMasukkan pilihan menu Anda (0-4) :");
             if (input != null) {
                 switch (input) {
                     case "1":
                         JOptionPane.showMessageDialog(null, "Anda memilih menu untuk melihat Peserta Bootcamp.");
-                        lihatDataPeserta();
+                        lihatDataPeserta(); // Pengguna memilih untuk melihat daftar peserta, maka fungsi lihatDataPeserta dipanggil
                         break;
                     case "2":
-                        daftarPeserta();
+                        daftarPeserta(); // Pengguna memilih untuk menambahkan peserta, maka fungsi daftarPeserta dipanggil
                         break;
                     case "3" :
-                        hapusPeserta();
+                        hapusPeserta(); // Pengguna memilih untuk menghapus peserta, maka fungsi hapusPeserta dipanggil
                         break;
                     case "4" :
-                        updatePeserta();
+                        updatePeserta(); // Pengguna memilih untuk update peserta, maka fungsi updatePeserta dipanggil
                         break;
                     case "0":
                         JOptionPane.showMessageDialog(null, "Anda memilih untuk keluar dari aplikasi. \nTerimakasih atas waktunya.");
                         menuLooping = false;
                         break;
                     default:
-                        JOptionPane.showMessageDialog(null, "Mohon maaf! Pilihan yang anda inputkan tidak valid. \nSilahkan coba inputkan kembali.");
+                        JOptionPane.showMessageDialog(null, "Mohon maaf! Pilihan yang anda inputkan tidak valid. \nSilahkan coba inputkan kembali.", "Error", JOptionPane.ERROR_MESSAGE);
                         break;
                 }
             }
         }
     }
 
+    // Metode untuk menampilkan pesan menu
     public static String menuMessage() {
-        String menuMessage;
-        menuMessage = "Halo, selamat datang di Manajemen Peserta Bootcamp! \n" +
+        return "Halo, selamat datang di Manajemen Peserta Bootcamp! \n" +
                 "Berikut menu - menu yang tersedia : \n" +
                 "1. Lihat Peserta Bootcamp\n" +
                 "2. Mendaftarkan Peserta Baru\n" +
                 "3. Menghapus Peserta\n" +
                 "4. Update Data Peserta\n" +
                 "0. Keluar dari Aplikasi";
-        return menuMessage;
     }
+
+    // Metode untuk menampilkan data peserta
     public static void lihatDataPeserta() {
         String dataMessage = "Berikut Data Peserta Bootcamp yang tersedia :";
 
@@ -85,11 +92,13 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk mendaftarkan/menambahkan peserta baru
     public static void daftarPeserta() {
         JOptionPane.showMessageDialog(null, "Anda memilih menu untuk Mendaftarkan Peserta Baru.");
         lihatDataPeserta();
         boolean loopInputNama = true;
         while (loopInputNama) {
+            // Meminta input nama peserta baru
             String inputNama = JOptionPane.showInputDialog(null, "Silahkan inputkan nama peserta : ");
 
             if (inputNama != null && inputNama.equalsIgnoreCase("keluar")) {
@@ -105,6 +114,7 @@ public class ListPesertaBootcamp extends Component {
                 }
 
                 if (!namaExists) {
+                    // Meminta input alamat dan validasi nomor telepon
                     String inputAlamat = JOptionPane.showInputDialog(null, "Silahkan inputkan alamat peserta : ");
                     boolean validasiNoTelepon = false;
                     while (!validasiNoTelepon) {
@@ -117,13 +127,21 @@ public class ListPesertaBootcamp extends Component {
                                 if (inputNama != null && inputAlamat != null && inputNoTelp != null) {
                                     tambahPeserta(getDataPeserta(), inputNama, inputAlamat, inputNoTelp, "aktif");
                                     JOptionPane.showMessageDialog(null, "Selamat! Anda berhasil menambahkan peserta baru.");
-                                    validasiNoTelepon = true;
-                                    loopInputNama = false;
-                                } else {
-                                    validasiNoTelepon = true;
-                                    loopInputNama = false;
-                                }
+                                    int result = JOptionPane.showConfirmDialog(
+                                            null,
+                                            "Apakah Anda ingin menambahkan peserta baru lagi?",
+                                            "Konfirmasi",
+                                            JOptionPane.YES_NO_OPTION
+                                    );
 
+                                    if (result == JOptionPane.YES_OPTION) {
+                                        validasiNoTelepon = true;
+                                        loopInputNama = true;
+                                    } else if (result == JOptionPane.NO_OPTION) {
+                                        validasiNoTelepon = true;
+                                        loopInputNama = false;
+                                    }
+                                }
                             } else {
                                 JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                             }
@@ -136,6 +154,7 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk menghapus peserta
     public static void hapusPeserta() {
         JOptionPane.showMessageDialog(null, "Anda memilih menu untuk menghapus peserta.");
         lihatDataPeserta();
@@ -158,6 +177,7 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk melakukan update data peserta
     public static void updatePeserta() {
         JOptionPane.showMessageDialog(null, "Anda memilih menu untuk update peserta.");
         lihatDataPeserta();
@@ -211,9 +231,9 @@ public class ListPesertaBootcamp extends Component {
                 }
             }
         }
-
     }
 
+    // Metode untuk mengupdate nama peserta
     public static void updateNama(String namaLama) {
         boolean loopInputNamaBaru = false;
         while (!loopInputNamaBaru) {
@@ -241,6 +261,7 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk mengupdate alamat peserta
     public static void updateAlamat(String namaLama) {
         String inputAlamatBaru = JOptionPane.showInputDialog(null, "Silahkan inputkan alamat peserta yang baru : ");
 
@@ -255,6 +276,7 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk mengupdate nomor telepon peserta
     public static void updateNoTelp(String namaLama) {
         boolean validasiNoTelepon = false;
         while (!validasiNoTelepon) {
@@ -279,6 +301,5 @@ public class ListPesertaBootcamp extends Component {
                 }
             }
         }
-
     }
 }
