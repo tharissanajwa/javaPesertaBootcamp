@@ -1,3 +1,7 @@
+package controller;
+
+import model.PesertaBootcamp;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -9,12 +13,12 @@ public class ListPesertaBootcamp extends Component {
     private static List<PesertaBootcamp> dataPeserta = new ArrayList<>();
 
     // Metode getter untuk mendapatkan data peserta
-    public static List<PesertaBootcamp> getDataPeserta() {
+    private static List<PesertaBootcamp> getDataPeserta() {
         return dataPeserta;
     }
 
     // Metode untuk menambahkan peserta baru ke dalam daftar
-    public static List<PesertaBootcamp> tambahPeserta(List<PesertaBootcamp> peserta, String nama, String alamat, String noTelp, String statusPeserta) {
+    private static List<PesertaBootcamp> tambahPeserta(List<PesertaBootcamp> peserta, String nama, String alamat, String noTelp, String statusPeserta) {
         peserta.add(new PesertaBootcamp(nama, alamat, noTelp, statusPeserta));
         return peserta;
     }
@@ -58,7 +62,7 @@ public class ListPesertaBootcamp extends Component {
     }
 
     // Metode untuk menampilkan pesan menu
-    public static String menuMessage() {
+    private static String menuMessage() {
         return "Halo, selamat datang di Manajemen Peserta Bootcamp! \n" +
                 "Berikut menu - menu yang tersedia : \n" +
                 "1. Lihat Peserta Bootcamp\n" +
@@ -69,7 +73,7 @@ public class ListPesertaBootcamp extends Component {
     }
 
     // Metode untuk menampilkan data peserta
-    public static void lihatDataPeserta() {
+    private static void lihatDataPeserta() {
         String dataMessage = "Berikut Data Peserta Bootcamp yang tersedia :";
 
         int number = 0; // Inisiliasi variabel number untuk pengecekan apakah data nya ada atau tidak
@@ -92,8 +96,58 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk pengecekan nama
+    private static int namaExists(String inputNama) {
+        int number = 0;
+        // Cek apakah nama yang diinputkan pengguna sudah ada dalam data atau belum
+        for (PesertaBootcamp peserta : getDataPeserta()) {
+            if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
+                if (inputNama != null && inputNama.equalsIgnoreCase(peserta.getNama())) {
+                    number++; // Jika ada, maka number akan ditambahkan
+                }
+            }
+        }
+        return number;
+    }
+
+    // Metode untuk pengecekan no telepon
+    private static boolean validasiNoTelp(boolean loopInputNama, String inputNama, String inputAlamat) {
+        boolean validasiNoTelepon = false;
+        while (!validasiNoTelepon) { // Looping untuk validasi no telepon
+            String inputNoTelp = JOptionPane.showInputDialog(null, "Silahkan inputkan no telepon peserta : ");
+            if (inputNoTelp != null && inputNoTelp.equalsIgnoreCase("keluar")) {
+                validasiNoTelepon = true;
+                loopInputNama = false;
+            } else {
+                if (inputNoTelp != null && inputNoTelp.matches("^[0-9+]{10,15}$")) { // Mengecek apakah inputan pengguna berupa 10-15 digit angka
+                    if (inputNama != null && inputAlamat != null && inputNoTelp != null) { // Jika inputan berupa null, maka inputan tidak akan ditambahkan ke data peserta
+                        tambahPeserta(getDataPeserta(), inputNama, inputAlamat, inputNoTelp, "aktif");
+                        JOptionPane.showMessageDialog(null, "Selamat! Anda berhasil menambahkan peserta baru.");
+                        int result = JOptionPane.showConfirmDialog( // Menanyakan pengguna apakah ingin menambahkan peserta baru lagi?
+                                null,
+                                "Apakah Anda ingin menambahkan peserta baru lagi?",
+                                "Konfirmasi",
+                                JOptionPane.YES_NO_OPTION
+                        );
+
+                        if (result == JOptionPane.YES_OPTION) {
+                            validasiNoTelepon = true;
+                            loopInputNama = true;
+                        } else if (result == JOptionPane.NO_OPTION) {
+                            validasiNoTelepon = true;
+                            loopInputNama = false;
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+        return loopInputNama;
+    }
+
     // Metode untuk mendaftarkan/menambahkan peserta baru
-    public static void daftarPeserta() {
+    private static void daftarPeserta() {
         JOptionPane.showMessageDialog(null, "Anda memilih menu untuk Mendaftarkan Peserta Baru.");
         lihatDataPeserta(); // Menampilkan list peserta yang tersedia
         boolean loopInputNama = true;
@@ -104,50 +158,11 @@ public class ListPesertaBootcamp extends Component {
             if (inputNama != null && inputNama.equalsIgnoreCase("keluar")) { // Jika inputan pengguna adalah keluar, maka pengguna akan diarahkan kembali ke menu
                 loopInputNama = false;
             } else {
-                boolean namaExists = false;
-                // Cek apakah nama yang diinputkan pengguna sudah ada dalam data atau belum
-                for (PesertaBootcamp peserta : getDataPeserta()) {
-                    if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
-                        if (inputNama != null && inputNama.equalsIgnoreCase(peserta.getNama())) {
-                            namaExists = true; // Jika ada, maka akan diberikan nilai true
-                        }
-                    }
-                }
-
-                if (!namaExists) { // Jika nama tidak ada, maka pengguna akan diberikan inputan selanjutnya
+                int namaExists = namaExists(inputNama);
+                if (namaExists == 0) { // Jika nama tidak ada, maka pengguna akan diberikan inputan selanjutnya
                     // Meminta input alamat dan validasi nomor telepon
                     String inputAlamat = JOptionPane.showInputDialog(null, "Silahkan inputkan alamat peserta : ");
-                    boolean validasiNoTelepon = false;
-                    while (!validasiNoTelepon) { // Looping untuk validasi no telepon
-                        String inputNoTelp = JOptionPane.showInputDialog(null, "Silahkan inputkan no telepon peserta : ");
-                        if (inputNoTelp != null && inputNoTelp.equalsIgnoreCase("keluar")) {
-                            validasiNoTelepon = true;
-                            loopInputNama = false;
-                        } else {
-                            if (inputNoTelp != null && inputNoTelp.matches("^[0-9+]{10,15}$")) { // Mengecek apakah inputan pengguna berupa 10-15 digit angka
-                                if (inputNama != null && inputAlamat != null && inputNoTelp != null) { // Jika inputan berupa null, maka inputan tidak akan ditambahkan ke data peserta
-                                    tambahPeserta(getDataPeserta(), inputNama, inputAlamat, inputNoTelp, "aktif");
-                                    JOptionPane.showMessageDialog(null, "Selamat! Anda berhasil menambahkan peserta baru.");
-                                    int result = JOptionPane.showConfirmDialog( // Menanyakan pengguna apakah ingin menambahkan peserta baru lagi?
-                                            null,
-                                            "Apakah Anda ingin menambahkan peserta baru lagi?",
-                                            "Konfirmasi",
-                                            JOptionPane.YES_NO_OPTION
-                                    );
-
-                                    if (result == JOptionPane.YES_OPTION) {
-                                        validasiNoTelepon = true;
-                                        loopInputNama = true;
-                                    } else if (result == JOptionPane.NO_OPTION) {
-                                        validasiNoTelepon = true;
-                                        loopInputNama = false;
-                                    }
-                                }
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                        }
-                    }
+                    loopInputNama = validasiNoTelp(true, inputNama, inputAlamat);
                 } else {
                     JOptionPane.showMessageDialog(null, "Mohon maaf nama " + inputNama + " sudah ada dalam data. Silahkan buat nama baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -156,7 +171,7 @@ public class ListPesertaBootcamp extends Component {
     }
 
     // Metode untuk menghapus peserta
-    public static void hapusPeserta() {
+    private static void hapusPeserta() {
         JOptionPane.showMessageDialog(null, "Anda memilih menu untuk menghapus peserta.");
         lihatDataPeserta();
         String inputNama = JOptionPane.showInputDialog(null, "Silahkan inputkan nama peserta yang ingin dihapus : ");
@@ -178,56 +193,52 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk validasi inputan pengguna ingin update entitas apa?
+    private static boolean inputPilihanUpdate(boolean loopingInputNama, String inputNama) {
+        boolean loopInputPilihan = false;
+        while (!loopInputPilihan) {
+            // Menanyakan pengguna ingin merubah entitas data apa?
+            String inputPilihan = JOptionPane.showInputDialog(null, "Silahkan inputkan data yang ingin dirubah (Nama, Alamat, No Telepon): ");
+
+            if (inputPilihan != null && inputPilihan.equalsIgnoreCase("keluar")) {
+                loopInputPilihan = true;
+                loopingInputNama = true;
+            } else {
+                switch (inputPilihan) {
+                    case "Nama" :
+                        updateNama(inputNama); // Pengguna memilih untuk mengubah entitas nama, maka fungsi updateNama akan dipanggil
+                        loopInputPilihan = true;
+                        break;
+                    case "Alamat" :
+                        updateAlamat(inputNama); // Pengguna memilih untuk mengubah entitas alamat, maka fungsi updateAlamat akan dipanggil
+                        loopInputPilihan = true;
+                        break;
+                    case "No Telepon" :
+                        updateNoTelp(inputNama); // Pengguna memilih untuk mengubah entitas no telepon, maka fungsi updateNoTelp akan dipanggil
+                        loopInputPilihan = true;
+                        break;
+                    default :
+                        JOptionPane.showMessageDialog(null, "Maaf! Inputan harus berupa Nama, Alamat, atau No Telepon. Silahkan coba kembali. \nUntuk kembali ke menu, silahkan ketikkan `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
+                        break;
+                }
+            }
+        }
+        return loopingInputNama;
+    }
+
     // Metode untuk melakukan update data peserta
-    public static void updatePeserta() {
+    private static void updatePeserta() {
         JOptionPane.showMessageDialog(null, "Anda memilih menu untuk update peserta.");
         lihatDataPeserta();
         boolean loopingInputNama = false;
         while (!loopingInputNama) {
             String inputNama = JOptionPane.showInputDialog(null, "Silahkan inputkan nama peserta yang ingin dirubah : ");
-
             if (inputNama != null && inputNama.equalsIgnoreCase("keluar")) {
                 loopingInputNama = true;
             } else {
-                int number = 0;
-                for (PesertaBootcamp peserta : getDataPeserta()) {
-                    if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
-                        if (inputNama != null && inputNama.equalsIgnoreCase(peserta.getNama())) {
-                            number++;
-                        }
-                    }
-                }
-
+                int number = namaExists(inputNama);
                 if (number > 0) {
-                    loopingInputNama = true;
-                    boolean loopInputPilihan = false;
-                    while (!loopInputPilihan) {
-                        // Menanyakan pengguna ingin merubah entitas data apa?
-                        String inputPilihan = JOptionPane.showInputDialog(null, "Silahkan inputkan data yang ingin dirubah (Nama, Alamat, No Telepon): ");
-
-                        if (inputPilihan != null && inputPilihan.equalsIgnoreCase("keluar")) {
-                            loopInputPilihan = true;
-                            loopingInputNama = true;
-                        } else {
-                            switch (inputPilihan) {
-                                case "Nama" :
-                                    updateNama(inputNama); // Pengguna memilih untuk mengubah entitas nama, maka fungsi updateNama akan dipanggil
-                                    loopInputPilihan = true;
-                                    break;
-                                case "Alamat" :
-                                    updateAlamat(inputNama); // Pengguna memilih untuk mengubah entitas alamat, maka fungsi updateAlamat akan dipanggil
-                                    loopInputPilihan = true;
-                                    break;
-                                case "No Telepon" :
-                                    updateNoTelp(inputNama); // Pengguna memilih untuk mengubah entitas no telepon, maka fungsi updateNoTelp akan dipanggil
-                                    loopInputPilihan = true;
-                                    break;
-                                default :
-                                    JOptionPane.showMessageDialog(null, "Maaf! Inputan harus berupa Nama, Alamat, atau No Telepon. Silahkan coba kembali. \nUntuk kembali ke menu, silahkan ketikkan `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
-                                    break;
-                            }
-                        }
-                    }
+                    loopingInputNama = inputPilihanUpdate(true, inputNama);
                 } else {
                     JOptionPane.showMessageDialog(null, "Maaf, peserta tidak ada dalam data. Silahkan coba kembali. \nUntuk kembali ke menu, silahkan ketikkan `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -235,8 +246,28 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk validasi update nama peserta
+    private static boolean validUpdateNama(String inputNamaBaru, String namaLama, boolean loopInputNamaBaru) {
+        for (PesertaBootcamp peserta : getDataPeserta()) {
+            if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
+                if (inputNamaBaru != null && !inputNamaBaru.contains(peserta.getNama())) {
+                    if (namaLama.equalsIgnoreCase(peserta.getNama())) {
+                        peserta.setNama(inputNamaBaru);
+                        JOptionPane.showMessageDialog(null, "Selamat, Anda berhasil merubah nama " + namaLama + " menjadi " + inputNamaBaru + ".");
+                        loopInputNamaBaru = true;
+                        break;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Mohon maaf nama " + inputNamaBaru + " sudah ada dalam data. Silahkan buat nama baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
+                }
+            }
+        }
+        return loopInputNamaBaru;
+    }
+
     // Metode untuk mengupdate nama peserta
-    public static void updateNama(String namaLama) {
+    private static void updateNama(String namaLama) {
         boolean loopInputNamaBaru = false;
         while (!loopInputNamaBaru) {
             String inputNamaBaru = JOptionPane.showInputDialog(null, "Silahkan inputkan nama peserta yang baru : ");
@@ -244,27 +275,13 @@ public class ListPesertaBootcamp extends Component {
             if (inputNamaBaru != null && inputNamaBaru.equalsIgnoreCase("keluar")) {
                 loopInputNamaBaru = true;
             } else {
-                for (PesertaBootcamp peserta : getDataPeserta()) {
-                    if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
-                        if (inputNamaBaru != null && !inputNamaBaru.equalsIgnoreCase(peserta.getNama())) {
-                            if (namaLama.equalsIgnoreCase(peserta.getNama())) {
-                                peserta.setNama(inputNamaBaru);
-                                JOptionPane.showMessageDialog(null, "Selamat, Anda berhasil merubah nama " + namaLama + " menjadi " + inputNamaBaru + ".");
-                                loopInputNamaBaru = true;
-                                break;
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Mohon maaf nama " + inputNamaBaru + " sudah ada dalam data. Silahkan buat nama baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
-                            break;
-                        }
-                    }
-                }
+                loopInputNamaBaru = validUpdateNama(inputNamaBaru, namaLama, false);
             }
         }
     }
 
     // Metode untuk mengupdate alamat peserta
-    public static void updateAlamat(String namaLama) {
+    private static void updateAlamat(String namaLama) {
         String inputAlamatBaru = JOptionPane.showInputDialog(null, "Silahkan inputkan alamat peserta yang baru : ");
 
         for (PesertaBootcamp peserta : getDataPeserta()) {
@@ -278,8 +295,27 @@ public class ListPesertaBootcamp extends Component {
         }
     }
 
+    // Metode untuk validasi update nomor telepon peserta
+    private static boolean validUpdateNoTelp(String inputNoTelpBaru, String namaLama, boolean validasiNoTelepon) {
+        if (inputNoTelpBaru != null && inputNoTelpBaru.matches("^[0-9+]{10,15}$")) {
+            for (PesertaBootcamp peserta : getDataPeserta()) {
+                if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
+                    if (namaLama.equalsIgnoreCase(peserta.getNama())) {
+                        String noTelpLama = peserta.getNoTelp();
+                        peserta.setNoTelp(inputNoTelpBaru);
+                        JOptionPane.showMessageDialog(null, "Selamat, Anda berhasil merubah no telepon " + noTelpLama + " menjadi " + inputNoTelpBaru + ".");
+                        validasiNoTelepon = true;
+                    }
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return validasiNoTelepon;
+    }
+
     // Metode untuk mengupdate nomor telepon peserta
-    public static void updateNoTelp(String namaLama) {
+    private static void updateNoTelp(String namaLama) {
         boolean validasiNoTelepon = false;
         while (!validasiNoTelepon) {
             String inputNoTelpBaru = JOptionPane.showInputDialog(null, "Silahkan inputkan no telepon peserta yang baru : ");
@@ -287,20 +323,7 @@ public class ListPesertaBootcamp extends Component {
             if (inputNoTelpBaru != null && inputNoTelpBaru.equalsIgnoreCase("keluar")) {
                 validasiNoTelepon = true;
             } else {
-                if (inputNoTelpBaru != null && inputNoTelpBaru.matches("^[0-9+]{10,15}$")) {
-                    for (PesertaBootcamp peserta : getDataPeserta()) {
-                        if (peserta.getStatusPeserta().equalsIgnoreCase("aktif")) {
-                            if (namaLama.equalsIgnoreCase(peserta.getNama())) {
-                                String noTelpLama = peserta.getNoTelp();
-                                peserta.setNoTelp(inputNoTelpBaru);
-                                JOptionPane.showMessageDialog(null, "Selamat, Anda berhasil merubah no telepon " + noTelpLama + " menjadi " + inputNoTelpBaru + ".");
-                                validasiNoTelepon = true;
-                            }
-                        }
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Mohon maaf no telepon harus berupa 10-13 digit angka. Silahkan buat baru. \nUntuk kembali ke menu utama, silahkan ketik `keluar`.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                validasiNoTelepon = validUpdateNoTelp(inputNoTelpBaru, namaLama, false);
             }
         }
     }

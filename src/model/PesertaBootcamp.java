@@ -1,3 +1,5 @@
+package model;
+
 public class PesertaBootcamp {
     // Inilisiasi variabel atribut peserta
     private String nama;
@@ -5,7 +7,7 @@ public class PesertaBootcamp {
     private String noTelp;
     private String statusPeserta; // Status disini berfungsi untuk metode soft delete, bila status nya tidak aktif maka peserta tersebut tidak ada dalam data, namun history nya masih tersimpan
 
-    // Konstruktor untuk inisialisasi objek PesertaBootcamp
+    // Konstruktor untuk inisialisasi objek model.PesertaBootcamp
     public PesertaBootcamp(String nama, String alamat, String noTelp, String statusPeserta) {
         this.nama = nama;
         this.alamat = alamat;
